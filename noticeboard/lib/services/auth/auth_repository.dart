@@ -42,6 +42,11 @@ class AuthRepository {
     log(previousRoute);
     if (refreshToken.refreshToken != null) {
       await _authService.initHandle();
+      try {
+        await _authService.registerNotificationToken();
+      } catch (e) {
+        log('Unable to register notification token: $e');
+      }
       if (initialNotice != null) {
         try {
           NoticeContent notice = await ApiService().fetchNoticeContent(

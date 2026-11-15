@@ -4,9 +4,9 @@ class NotificationToken {
   String? token;
   String? clientIdentifier;
 
-  NotificationToken(String? token) {
+  NotificationToken(String? token, {String? clientIdentifier}) {
     this.token = token;
-    this.clientIdentifier = genClientIdentifier();
+    this.clientIdentifier = clientIdentifier ?? genClientIdentifier();
   }
 
   String genClientIdentifier() {
@@ -22,6 +22,9 @@ class NotificationToken {
   }
 
   dynamic retrievePayload() {
-    return {"client_identifier": this.token, "token": this.token};
+    return {
+      "client_identifier": this.clientIdentifier,
+      "token": this.token,
+    };
   }
 }

@@ -134,13 +134,25 @@ class AuthService {
     }
   }
 
-  Future registerNotificationToken() async {
+  Future registerNotificationToken({String? token}) async {
     try {
       AccessToken accessTokenObj =
           // await _authService.fetchAccessTokenFromRefresh();
           await fetchAccessToken();
-      String? token = await FirebaseMessaging.instance.getToken();
-      NotificationToken notificationToken = NotificationToken(token);
+      await FirebaseMessaging.instance.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      token ??= await FirebaseMessaging.instance.getToken();
+      if (token == null) {
+        throw Exception('FCM token unavailable');
+      }
+      String? clientIdentifier = await fetchNotificationIdentifier();
+      NotificationToken notificationToken = NotificationToken(
+        token,
+        clientIdentifier: clientIdentifier,
+      );
       await storeNotificationIdentifier(notificationToken.clientIdentifier);
       final http.Response postResponse =
           await http.post(Uri.parse(BASE_URL + NOTIFICATION_EP),
@@ -157,6 +169,16 @@ class AuthService {
     } catch (e) {
       throw Exception('Failure');
     }
+  }
+
+  void listenForNotificationTokenRefresh() {
+    FirebaseMessaging.instance.onTokenRefresh.listen((token) async {
+      try {
+        await registerNotificationToken(token: token);
+      } catch (e) {
+        print('Unable to register refreshed notification token: $e');
+      }
+    });
   }
 
   Future deRegisterNotificationToken() async {

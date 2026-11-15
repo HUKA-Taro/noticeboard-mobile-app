@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:noticeboard/services/auth/auth_service.dart';
 import './routes/routing_constants.dart';
 import './routes/routing.dart';
 import 'global/global_constants.dart';
@@ -7,6 +9,12 @@ import 'global/global_constants.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  AuthService().listenForNotificationTokenRefresh();
   runApp(MyApp());
 }
 
