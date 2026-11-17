@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:noticeboard/global/global_constants.dart';
 import 'package:noticeboard/global/global_functions.dart';
 import 'package:noticeboard/models/user_profile.dart';
@@ -27,7 +30,7 @@ class _ProfileState extends State<Profile> {
   @override
   void dispose() {
     _profileBloc.disposeStreams();
-    
+
     super.dispose();
   }
 
@@ -122,7 +125,25 @@ class _ProfileState extends State<Profile> {
                   buildMenuItem(
                       aboutUsIcon, "About us", ProfileEvents.aboutUsEvent),
                   sizedBox(20.0),
-                  buildMenuItem(logoutIcon, 'Logout', ProfileEvents.logoutEvent)
+                  buildMenuItem(
+                      logoutIcon, 'Logout', ProfileEvents.logoutEvent),
+                  if (kDebugMode &&
+                      !kIsWeb &&
+                      defaultTargetPlatform == TargetPlatform.android) ...[
+                    const SizedBox(height: 20),
+                    ListTile(
+                      leading: const Icon(Icons.notifications_active),
+                      title: const Text('Test notification now'),
+                      onTap: () => _testNotification(false),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.timer_outlined),
+                      title: const Text('Test notification in 30 seconds'),
+                      subtitle: const Text(
+                          'Schedule, then clear the app from Recents.'),
+                      onTap: () => _testNotification(true),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -149,6 +170,34 @@ class _ProfileState extends State<Profile> {
         ],
       ),
     );
+  }
+
+  Future<void> _testNotification(bool delayed) async {
+    try {
+      final settings = await FirebaseMessaging.instance
+          .requestPermission(alert: true, badge: true, sound: true);
+      if (settings.authorizationStatus == AuthorizationStatus.denied) {
+        throw PlatformException(
+            code: 'permission_denied',
+            message: 'Enable notifications in Android app settings first.');
+      }
+      await const MethodChannel('noticeboard/notifications').invokeMethod(
+        delayed ? 'scheduleTest' : 'show',
+        {
+          'title': 'Noticeboard test',
+          'body': 'Local notification test. Not sent by the server.'
+        },
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(delayed
+              ? 'Scheduled for 30 seconds. You can clear the app from Recents now.'
+              : 'Test notification sent.')));
+    } on PlatformException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(error.message ?? 'Unable to test notifications.')));
+    }
   }
 
   Widget buildProfilePic(AsyncSnapshot snapshot) {

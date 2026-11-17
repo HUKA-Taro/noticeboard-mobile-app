@@ -118,7 +118,6 @@ class AuthService {
     //AccessToken accessTokenObj = await fetchAccessTokenFromRefresh();
     try {
       AccessToken accessTokenObj = await fetchAccessToken();
-      print(accessTokenObj.accessToken);
       final http.Response userProfileResponse = await http
           .get(Uri.parse(BASE_URL + EP_WHO_AM_I), headers: {
         AUTHORIZAION_KEY: AUTHORIZATION_PREFIX + accessTokenObj.accessToken!

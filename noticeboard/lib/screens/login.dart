@@ -90,7 +90,7 @@ class _LoginState extends State<Login> {
                       alignment: Alignment.bottomCenter,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 15.0),
-                        child: lotsOfLove(context, _width),
+                        child: startupCredit(),
                       ),
                     )
                   ]),

@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:noticeboard/services/auth/auth_service.dart';
 import './routes/routing_constants.dart';
 import './routes/routing.dart';
@@ -15,6 +17,21 @@ Future<void> main() async {
     sound: true,
   );
   AuthService().listenForNotificationTokenRefresh();
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    const notifications = MethodChannel('noticeboard/notifications');
+    FirebaseMessaging.onMessage.listen((message) async {
+      final notification = message.notification;
+      if (notification == null) return;
+      try {
+        await notifications.invokeMethod('show', {
+          'title': notification.title,
+          'body': notification.body,
+        });
+      } on PlatformException catch (error) {
+        debugPrint('Unable to display notification: ${error.code}');
+      }
+    });
+  }
   runApp(MyApp());
 }
 

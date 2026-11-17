@@ -68,27 +68,30 @@ Container buildContactImgContainer(double _width) {
   );
 }
 
-Widget lotsOfLove(BuildContext context, double _width) {
-  return Row(
-    mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[
-      Text(
-        "Made With ",
-        style: TextStyle(
-          color: Colors.black54,
+Widget startupCredit() {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: const [
+        Text(
+          'Updated by',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12, height: 1.4, color: Colors.black54),
         ),
-      ),
-      Icon(
-        Icons.favorite,
-        color: Colors.red[900],
-      ),
-      Text(
-        " by IMG",
-        style: TextStyle(
-          color: Colors.black54,
+        SizedBox(height: 2),
+        Text(
+          'HUKA_Taro',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 15,
+            height: 1.4,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF5287D9),
+          ),
         ),
-      ),
-    ],
+      ],
+    ),
   );
 }

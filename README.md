@@ -52,3 +52,30 @@ It's that simple!
 
 ## Credits
 <img src=readmeAssets/img.svg>
+
+## Updates by HUKA_Taro
+
+This version includes notification improvements and Android testing tools:
+
+- Requests notification permission and registers the current Firebase Cloud Messaging (FCM) token with the backend.
+- Listens for FCM token refreshes and attempts to register the replacement token.
+- Displays incoming FCM notification messages while the Android app is open, using a high-importance notification channel. Banners and sound depend on Android notification settings.
+- Adds **Test notification now** and **Test notification in 30 seconds** to the profile menu in Android debug builds.
+- Schedules the delayed test using Android's alarm scheduler so it can fire after the app is removed from Recents. The test receiver and alarm permissions are declared only in the debug manifest.
+- Updates the Android Gradle Plugin to 9.1.1 and limits Gradle memory and parallel workers for local builds on machines with limited available memory.
+
+### Testing notifications
+
+1. Install a debug build, sign in, and allow notification permission.
+2. Tap your profile picture and choose **Test notification now** to check local notification display.
+3. Choose **Test notification in 30 seconds**, then remove Noticeboard from Recents. Wait for the scheduled notification. Do not use Android's **Force stop**, which prevents this test from running until the app is reopened.
+
+The debug APK was built and installed on a Pixel 7. Immediate local notification display and delayed delivery after removing the app from Recents were verified. These local tests do **not** verify FCM delivery, backend targeting, or server-side token registration; those require an actual push message from the app's Firebase project or backend.
+
+To build an Android debug APK from the `noticeboard` directory:
+
+```sh
+flutter build apk --debug
+```
+
+The APK is written to `noticeboard/build/app/outputs/flutter-apk/app-debug.apk` relative to the repository root. The notification test menu is excluded from release builds.
