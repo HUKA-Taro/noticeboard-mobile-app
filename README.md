@@ -55,6 +55,9 @@ It's that simple!
 
 ## Updates by HUKA_Taro
 
+# CURRENTLY BROKEN!!
+
+
 This version includes notification improvements and Android testing tools:
 
 - Requests notification permission and registers the current Firebase Cloud Messaging (FCM) token with the backend.
