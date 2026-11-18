@@ -55,8 +55,8 @@ It's that simple!
 
 ## Updates by HUKA_Taro
 
-# CURRENTLY BROKEN!!
-
+> [!IMPORTANT]
+> **Live Noticeboard push notifications are currently unavailable.** The app supports Firebase Cloud Messaging (FCM), and Channel i accepted the device token during testing. Channel i’s backend is currently not sending Noticeboard pushes for new or updated notices. Live alerts require a fix to the backend’s Firebase sending integration.
 
 This version includes notification improvements and Android testing tools:
 
@@ -73,7 +73,7 @@ This version includes notification improvements and Android testing tools:
 2. Tap your profile picture and choose **Test notification now** to check local notification display.
 3. Choose **Test notification in 30 seconds**, then remove Noticeboard from Recents. Wait for the scheduled notification. Do not use Android's **Force stop**, which prevents this test from running until the app is reopened.
 
-The debug APK was built and installed on a Pixel 7. Immediate local notification display and delayed delivery after removing the app from Recents were verified. These local tests do **not** verify FCM delivery, backend targeting, or server-side token registration; those require an actual push message from the app's Firebase project or backend.
+On a Pixel 7, Channel i accepted token registration with HTTP 201. The immediate and delayed debug notifications also appeared, including after removing the app from Recents. The debug buttons generate local notifications. Live Firebase delivery still needs to be tested once backend sending is restored.
 
 To build an Android debug APK from the `noticeboard` directory:
 
